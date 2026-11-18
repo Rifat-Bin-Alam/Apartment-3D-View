@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #080a10;
+    color: #f4f4f5;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+    text-wrap: balance;
+  }
+
+  .font-mono-tabular {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+@keyframes portal-float {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.025);
+  }
+}
+
+@keyframes portal-glow-purple {
+  0%,
+  100% {
+    box-shadow:
+      0 0 14px rgba(168, 85, 247, 0.55),
+      0 8px 22px rgba(0, 0, 0, 0.55);
+  }
+  50% {
+    box-shadow:
+      0 0 26px rgba(192, 132, 252, 0.9),
+      0 10px 28px rgba(88, 28, 135, 0.65);
+  }
+}
+
+@keyframes portal-glow-emerald {
+  0%,
+  100% {
+    box-shadow:
+      0 0 14px rgba(16, 185, 129, 0.55),
+      0 8px 22px rgba(0, 0, 0, 0.55);
+  }
+  50% {
+    box-shadow:
+      0 0 26px rgba(52, 211, 153, 0.9),
+      0 10px 28px rgba(6, 78, 59, 0.65);
+  }
+}
+
+.animate-portal-float {
+  animation: portal-float 2.8s ease-in-out infinite;
+}
+
+.animate-portal-glow-purple {
+  animation: portal-glow-purple 2.2s ease-in-out infinite;
+}
+
+.animate-portal-glow-emerald {
+  animation: portal-glow-emerald 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-portal-float,
+  .animate-portal-glow-purple,
+  .animate-portal-glow-emerald {
+    animation: none;
+  }
+}
+

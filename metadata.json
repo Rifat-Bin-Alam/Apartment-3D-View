@@ -1,0 +1,6 @@
+{
+  "name": "Interactive 3D Room Portfolio",
+  "description": "Photorealistic interactive 3D room environment reconstructed in Three.js and React Three Fiber as an explorable personal portfolio website background.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
