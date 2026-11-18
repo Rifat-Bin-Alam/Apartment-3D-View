@@ -14,6 +14,7 @@ export interface HallwayTextureSet {
   calendar2025: THREE.CanvasTexture;
   leafSpray: THREE.CanvasTexture;
   crotonLeaf: THREE.CanvasTexture;
+  outsideHomeView: THREE.CanvasTexture;
   dispose: () => void;
 }
 
@@ -328,6 +329,66 @@ function createPlantSprayTexture(greenTone: boolean, anisotropy: number): THREE.
   return tex;
 }
 
+function createOutsideHomeViewTexture(anisotropy: number): THREE.CanvasTexture {
+  const w = 1024;
+  const h = 640;
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const ctx = c.getContext('2d')!;
+
+  // Dusk twilight sky gradient cohesive with the Balcony exterior view
+  const sky = ctx.createLinearGradient(0, 0, 0, h * 0.72);
+  sky.addColorStop(0.0, '#161b33');
+  sky.addColorStop(0.32, '#2b2548');
+  sky.addColorStop(0.65, '#5f355c');
+  sky.addColorStop(0.9, '#854c66');
+  sky.addColorStop(1.0, '#3e233b');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, w, h);
+
+  // Horizon silhouette band
+  ctx.fillStyle = '#090c12';
+  ctx.fillRect(0, h * 0.65, w, h * 0.35);
+
+  // Neighboring flat-roof residential houses & courtyard rooftops
+  ctx.fillStyle = '#0c1018';
+  ctx.fillRect(w * 0.04, h * 0.5, w * 0.24, h * 0.22);
+  ctx.fillRect(w * 0.64, h * 0.44, w * 0.32, h * 0.26);
+  ctx.fillRect(w * 0.71, h * 0.37, w * 0.17, h * 0.09);
+  ctx.fillRect(w * 0.89, h * 0.24, 4, h * 0.21);
+  ctx.fillRect(w * 0.77, h * 0.29, 3, h * 0.09);
+
+  // Warm illuminated windows on neighboring home exterior
+  ctx.fillStyle = 'rgba(253, 224, 148, 0.55)';
+  ctx.fillRect(w * 0.1, h * 0.55, 16, 22);
+  ctx.fillRect(w * 0.16, h * 0.55, 16, 22);
+  ctx.fillRect(w * 0.72, h * 0.51, 20, 24);
+  ctx.fillRect(w * 0.8, h * 0.51, 20, 24);
+
+  // Distant palm silhouettes & neighborhood trees
+  ctx.fillStyle = '#07090e';
+  const palms = [0.33, 0.44, 0.54, 0.6];
+  for (const pxNorm of palms) {
+    const px = pxNorm * w;
+    const topY = h * (0.46 + ((pxNorm * 11) % 0.09));
+    ctx.fillRect(px - 2, topY, 4, h * 0.22);
+    for (let f = 0; f < 6; f++) {
+      const a = (f / 6) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(px, topY);
+      ctx.lineTo(px + Math.cos(a) * 28, topY + Math.sin(a) * 15 + 6);
+      ctx.lineTo(px + Math.cos(a + 0.32) * 12, topY + Math.sin(a + 0.32) * 8);
+      ctx.fill();
+    }
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = anisotropy;
+  return tex;
+}
+
 export function createHallwayTextures(anisotropy = 8): HallwayTextureSet {
   const { wallAlbedo, wallBump } = createPlasterWall(anisotropy);
   const { floorRedAlbedo, floorDarkAlbedo, floorBump } = createHallwayFloors(anisotropy);
@@ -339,6 +400,7 @@ export function createHallwayTextures(anisotropy = 8): HallwayTextureSet {
   const calendar2025 = createCalendarTexture(anisotropy);
   const leafSpray = createPlantSprayTexture(true, anisotropy);
   const crotonLeaf = createPlantSprayTexture(false, anisotropy);
+  const outsideHomeView = createOutsideHomeViewTexture(anisotropy);
 
   return {
     wallAlbedo,
@@ -354,6 +416,7 @@ export function createHallwayTextures(anisotropy = 8): HallwayTextureSet {
     calendar2025,
     leafSpray,
     crotonLeaf,
+    outsideHomeView,
     dispose: () => {
       wallAlbedo.dispose();
       wallBump.dispose();
@@ -368,6 +431,7 @@ export function createHallwayTextures(anisotropy = 8): HallwayTextureSet {
       calendar2025.dispose();
       leafSpray.dispose();
       crotonLeaf.dispose();
+      outsideHomeView.dispose();
     },
   };
 }

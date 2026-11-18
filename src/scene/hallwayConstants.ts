@@ -66,6 +66,4 @@ export const HALLWAY_COLLIDERS: CollisionBox[] = [
   { minX: -0.1, maxX: 1.44, minY: 0, maxY: 1.05, minZ: -1.42, maxZ: 0.02 },
   // Water purifier & stand (back wall right-of-column)
   { minX: -0.92, maxX: -0.28, minY: 0, maxY: 1.28, minZ: 1.66, maxZ: 2.18 },
-  // Washbasin & laundry tub along continuous West wall inside back-right hallway
-  { minX: -2.4, maxX: -1.96, minY: 0, maxY: 1.05, minZ: 2.12, maxZ: 2.72 },
 ];

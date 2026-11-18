@@ -189,34 +189,6 @@ export function RoomArchitecture({
   const { width, depth, height, wallThickness, pillarSize, beamHeight, baseboardHeight } =
     ROOM_DIMENSIONS;
 
-  // Exposed wall conduit curves running from switchboard up to top beam & across to left vent
-  const wireGeometryMain = useMemo(() => {
-    const curve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-0.36, 1.29, -1.78),
-      new THREE.Vector3(-0.36, 1.72, -1.78),
-      new THREE.Vector3(-0.33, 2.08, -1.78),
-      new THREE.Vector3(-0.35, 2.48, -1.78),
-      new THREE.Vector3(-0.62, 2.51, -1.76),
-      new THREE.Vector3(-0.88, 2.52, -1.61),
-      new THREE.Vector3(-1.12, 2.44, -1.75),
-      new THREE.Vector3(-1.42, 2.38, -1.78),
-    ]);
-    return new THREE.TubeGeometry(curve, 36, 0.007, 6, false);
-  }, []);
-
-  // Restored power/cable detail arching from left of switchboard down along wall behind/into PC casing
-  const wireGeometrySecondary = useMemo(() => {
-    const curve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-0.5, 1.24, -1.772),
-      new THREE.Vector3(-0.64, 1.46, -1.772),
-      new THREE.Vector3(-0.69, 1.22, -1.772),
-      new THREE.Vector3(-0.68, 0.94, -1.772),
-      new THREE.Vector3(-0.65, 0.78, -1.74),
-      new THREE.Vector3(-0.56, 0.65, -1.6),
-    ]);
-    return new THREE.TubeGeometry(curve, 32, 0.0068, 8, false);
-  }, []);
-
   useFrame((_, rawDelta) => {
     const delta = Math.min(rawDelta, 0.05);
     const targetSpeed = fanRunning ? 3.2 : 0;
@@ -531,7 +503,7 @@ export function RoomArchitecture({
         <meshStandardMaterial color="#94a39c" roughness={0.5} />
       </mesh>
 
-      {/* Front Wall Electrical Switchboard & Exposed Conduit Wires */}
+      {/* Front Wall Electrical Switchboard */}
       <group name="Switchboard" position={[-0.36, 1.24, -halfD + 0.015]}>
         <mesh castShadow>
           <boxGeometry args={[0.38, 0.1, 0.025]} />
@@ -544,12 +516,6 @@ export function RoomArchitecture({
           </mesh>
         ))}
       </group>
-      <mesh geometry={wireGeometryMain}>
-        <meshStandardMaterial color="#a16207" roughness={0.7} />
-      </mesh>
-      <mesh geometry={wireGeometrySecondary}>
-        <meshStandardMaterial color="#27272a" roughness={0.8} />
-      </mesh>
 
       {/* Central Ceiling Fan (stationary canopy, downrod, & motor cap; rotating blade rotor only) */}
       <group name="CeilingFan" position={[0, height - 0.02, 0.05]}>

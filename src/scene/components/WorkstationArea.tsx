@@ -1,7 +1,20 @@
 import * as THREE from 'three';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ThreeEvent } from '@react-three/fiber';
 import { RoomTextureSet } from '../proceduralTextures';
 import { ROOM_BOUNDS } from '../roomConstants';
+
+const PORTFOLIO_WEBSITE_URL = 'https://rifat-bin-alam.vercel.app/';
+
+function openPortfolioWebsite() {
+  const anchor = document.createElement('a');
+  anchor.href = PORTFOLIO_WEBSITE_URL;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+}
 
 interface WorkstationAreaProps {
   textures: RoomTextureSet;
@@ -62,6 +75,13 @@ function RGBFan({
 
 export function WorkstationArea({ textures }: WorkstationAreaProps) {
   const wallZ = ROOM_BOUNDS.minZ; // -1.80
+  const [monitorHovered, setMonitorHovered] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      document.body.style.cursor = 'auto';
+    };
+  }, []);
 
   // Braided AIO liquid cooler tubes curving from CPU pump block to top radiator
   const aioTubes = useMemo(() => {
@@ -337,7 +357,7 @@ export function WorkstationArea({ textures }: WorkstationAreaProps) {
           <meshStandardMaterial color="#17191c" roughness={0.88} />
         </mesh>
 
-        {/* Left Monitor (24" Silver V-Stand) */}
+        {/* Left Monitor (24" Silver V-Stand — Interactive Portfolio Display) */}
         <group name="LeftMonitor" position={[-0.14, 0.76, -0.14]}>
           <mesh position={[0, 0.008, 0.02]} castShadow>
             <boxGeometry args={[0.24, 0.012, 0.16]} />
@@ -351,14 +371,32 @@ export function WorkstationArea({ textures }: WorkstationAreaProps) {
             <boxGeometry args={[0.54, 0.32, 0.02]} />
             <meshStandardMaterial color="#16181d" roughness={0.42} />
           </mesh>
-          <mesh position={[0, 0.22, 0.012]}>
+          <mesh
+            name="MainPortfolioMonitorScreen"
+            position={[0, 0.22, 0.012]}
+            onPointerOver={(e: ThreeEvent<PointerEvent>) => {
+              e.stopPropagation();
+              setMonitorHovered(true);
+              document.body.style.cursor = 'pointer';
+            }}
+            onPointerOut={(e: ThreeEvent<PointerEvent>) => {
+              e.stopPropagation();
+              setMonitorHovered(false);
+              document.body.style.cursor = 'auto';
+            }}
+            onClick={(e: ThreeEvent<MouseEvent>) => {
+              e.stopPropagation();
+              if (e.delta > 6) return;
+              openPortfolioWebsite();
+            }}
+          >
             <planeGeometry args={[0.515, 0.295]} />
             <meshStandardMaterial
               map={textures.monitorLeft}
               emissiveMap={textures.monitorLeft}
               emissive="#ffffff"
-              emissiveIntensity={0.68}
-              roughness={0.25}
+              emissiveIntensity={monitorHovered ? 1.15 : 0.88}
+              roughness={0.22}
             />
           </mesh>
         </group>

@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-import * as THREE from 'three';
 import { RoomTextureSet } from '../proceduralTextures';
 import { ROOM_BOUNDS } from '../roomConstants';
 
@@ -10,17 +8,6 @@ interface StorageAndDecorProps {
 export function StorageAndDecor({ textures }: StorageAndDecorProps) {
   const wallZ = ROOM_BOUNDS.minZ; // -1.80
   const leftWallX = ROOM_BOUNDS.minX; // -1.90
-
-  // Cable running along right side of loft shelf up into front-left vent
-  const shelfCableGeometry = useMemo(() => {
-    const curve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(leftWallX + 0.32, 2.16, -0.78),
-      new THREE.Vector3(leftWallX + 0.3, 2.18, -1.15),
-      new THREE.Vector3(leftWallX + 0.14, 2.29, -1.45),
-      new THREE.Vector3(-1.46, 2.38, wallZ + 0.03),
-    ]);
-    return new THREE.TubeGeometry(curve, 24, 0.006, 6, false);
-  }, [leftWallX, wallZ]);
 
   return (
     <group name="StorageAndDecor">
@@ -169,11 +156,6 @@ export function StorageAndDecor({ textures }: StorageAndDecorProps) {
         <mesh position={[leftWallX + 0.28, 2.19, -1.36]} castShadow>
           <boxGeometry args={[0.26, 0.1, 0.22]} />
           <meshStandardMaterial color="#94a3b8" transparent opacity={0.55} roughness={0.3} />
-        </mesh>
-
-        {/* Routed cable along shelf toward front-left vent */}
-        <mesh geometry={shelfCableGeometry}>
-          <meshStandardMaterial color="#4a3728" roughness={0.75} />
         </mesh>
       </group>
     </group>

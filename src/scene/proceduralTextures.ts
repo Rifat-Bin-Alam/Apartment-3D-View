@@ -490,32 +490,94 @@ function createCalligraphyPanels(anisotropy: number): THREE.CanvasTexture[] {
 function createMonitorTextures(anisotropy: number): {
   left: THREE.CanvasTexture;
   right: THREE.CanvasTexture;
+  onDispose: () => void;
 } {
-  // Left monitor: Dark web/AI studio IDE UI (matching Photo 2)
-  const [cL, ctxL] = makeCanvas(512, 320);
-  ctxL.fillStyle = '#111622';
-  ctxL.fillRect(0, 0, 512, 320);
-  // Sidebar
-  ctxL.fillStyle = '#182032';
-  ctxL.fillRect(0, 0, 108, 320);
-  // Top bar
-  ctxL.fillStyle = '#141b2b';
-  ctxL.fillRect(108, 0, 404, 28);
-  // Prompt/code box in center
-  ctxL.fillStyle = '#1d273c';
-  ctxL.fillRect(148, 86, 320, 74);
-  ctxL.fillStyle = '#e2e8f0';
-  ctxL.font = 'bold 13px sans-serif';
-  ctxL.fillText('Build your ideas with Code', 222, 68);
-  // Code lines
+  // Main monitor (LeftMonitor): User's portfolio website (https://rifat-bin-alam.vercel.app/)
+  const w = 1024;
+  const h = 586;
+  const [cL, ctxL] = makeCanvas(w, h);
+  const rand = seededRandom(808);
+
+  // Instant high-res canvas render matching the portfolio website hero + orbital portrait
+  ctxL.fillStyle = '#040814';
+  ctxL.fillRect(0, 0, w, h);
+
+  // Subtle starry background dots
+  for (let i = 0; i < 60; i++) {
+    ctxL.fillStyle = i % 5 === 0 ? 'rgba(96, 165, 250, 0.55)' : 'rgba(203, 213, 225, 0.45)';
+    ctxL.beginPath();
+    ctxL.arc(rand() * w, rand() * h, 1 + rand() * 1.4, 0, Math.PI * 2);
+    ctxL.fill();
+  }
+
+  // Top nav bar
   ctxL.fillStyle = '#60a5fa';
-  ctxL.fillRect(162, 104, 180, 6);
+  ctxL.font = 'bold 14px sans-serif';
+  ctxL.fillText('</> Rifat Bin Alam', 190, 42);
   ctxL.fillStyle = '#94a3b8';
-  ctxL.fillRect(162, 118, 240, 5);
-  ctxL.fillRect(162, 130, 140, 5);
-  // Taskbar
-  ctxL.fillStyle = '#090d16';
-  ctxL.fillRect(0, 298, 512, 22);
+  ctxL.font = '11px sans-serif';
+  ctxL.fillText('About   Skills   Projects   Education   Research   Contact', 405, 42);
+
+  // Status pill & Hero Title
+  ctxL.fillStyle = '#0f172a';
+  ctxL.fillRect(190, 160, 128, 20);
+  ctxL.fillStyle = '#22c55e';
+  ctxL.beginPath();
+  ctxL.arc(200, 170, 3, 0, Math.PI * 2);
+  ctxL.fill();
+  ctxL.fillStyle = '#cbd5e1';
+  ctxL.font = '10px sans-serif';
+  ctxL.fillText('Looking for opportunities', 210, 173);
+
+  ctxL.fillStyle = '#38bdf8';
+  ctxL.font = 'bold 12px monospace';
+  ctxL.fillText("HI, I'M", 190, 205);
+  ctxL.fillStyle = '#ffffff';
+  ctxL.font = 'bold 42px sans-serif';
+  ctxL.fillText('Rifat Bin Alam', 190, 248);
+  ctxL.fillStyle = '#3b82f6';
+  ctxL.font = 'bold 22px sans-serif';
+  ctxL.fillText('Backend Developer_', 190, 278);
+
+  // View Projects CTA button
+  ctxL.fillStyle = '#2563eb';
+  ctxL.fillRect(190, 368, 92, 28);
+  ctxL.fillStyle = '#ffffff';
+  ctxL.font = 'bold 11px sans-serif';
+  ctxL.fillText('View Projects', 200, 386);
+
+  // Orbital rings + portrait circle on right
+  const orbX = 720;
+  const orbY = 278;
+  ctxL.strokeStyle = 'rgba(96, 165, 250, 0.35)';
+  ctxL.lineWidth = 2;
+  ctxL.beginPath();
+  ctxL.arc(orbX, orbY, 108, 0, Math.PI * 2);
+  ctxL.stroke();
+  ctxL.beginPath();
+  ctxL.ellipse(orbX, orbY, 122, 68, -0.35, 0, Math.PI * 2);
+  ctxL.stroke();
+  ctxL.fillStyle = '#1e293b';
+  ctxL.beginPath();
+  ctxL.arc(orbX, orbY, 56, 0, Math.PI * 2);
+  ctxL.fill();
+
+  const leftTex = finalizeTexture(cL, true, anisotropy);
+
+  // Overlay the exact user portfolio screenshot cleanly preserving aspect ratio
+  let disposed = false;
+  const img = new Image();
+  img.onload = () => {
+    if (disposed) return;
+    ctxL.fillStyle = '#040814';
+    ctxL.fillRect(0, 0, w, h);
+    const drawW = w;
+    const drawH = (img.height / img.width) * w;
+    const offsetY = (h - drawH) / 2;
+    ctxL.drawImage(img, 0, offsetY, drawW, drawH);
+    leftTex.needsUpdate = true;
+  };
+  img.src = '/assets/aistudio/image_2f2807fc.png';
 
   // Right monitor: Vibrant violet-blue abstract wallpaper + terminal window (Photo 2)
   const [cR, ctxR] = makeCanvas(512, 320);
@@ -546,8 +608,11 @@ function createMonitorTextures(anisotropy: number): {
   ctxR.fillRect(0, 298, 512, 22);
 
   return {
-    left: finalizeTexture(cL, true, anisotropy),
+    left: leftTex,
     right: finalizeTexture(cR, true, anisotropy),
+    onDispose: () => {
+      disposed = true;
+    },
   };
 }
 
@@ -698,6 +763,7 @@ export function createRoomTextures(maxAnisotropy = 4): RoomTextureSet {
     chairCoverFloral,
     prayerCloth,
     dispose: () => {
+      monitors.onDispose();
       allTextures.forEach((t) => t.dispose());
     },
   };

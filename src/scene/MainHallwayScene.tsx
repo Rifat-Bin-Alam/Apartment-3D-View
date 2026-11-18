@@ -558,14 +558,6 @@ function MainHallwayWorld({
           color="#5c3319"
           teakTex={textures.teakWood}
         />
-        {/* Balcony-style half grill on NW doorway right edge (Left blue rectangle) */}
-        <HallwayGrillPanel
-          position={[-1.8, 1.05, -2.19]}
-          spanWidth={0.24}
-          height={2.08}
-          bays={2}
-          rungCount={8}
-        />
       </group>
 
       {/* NE Front-Right Real Hallway Continuation (-Z: -2.20 .. -4.20, X: +0.96 .. +1.80) */}
@@ -578,7 +570,7 @@ function MainHallwayWorld({
           <planeGeometry args={[0.84, 2.04]} />
           <meshStandardMaterial color="#d4deda" roughness={0.92} />
         </mesh>
-        {/* West inner wall (X = 0.89), East inner wall (X = 1.87), Far-North end wall (Z = -4.27) */}
+        {/* West inner wall (X = 0.89), East inner wall (X = 1.87) */}
         <mesh position={[0.89, height / 2, -3.27]} receiveShadow>
           <boxGeometry args={[wallThickness, height, 2.0]} />
           <meshStandardMaterial map={textures.wallAlbedo} bumpMap={textures.wallBump} bumpScale={0.008} roughness={0.86} />
@@ -587,9 +579,43 @@ function MainHallwayWorld({
           <boxGeometry args={[wallThickness, height, 2.0]} />
           <meshStandardMaterial map={textures.wallAlbedo} bumpMap={textures.wallBump} bumpScale={0.008} roughness={0.86} />
         </mesh>
-        <mesh position={[1.38, height / 2, -4.27]} receiveShadow>
-          <boxGeometry args={[1.12, height, wallThickness]} />
+        {/* Far-North end wall (Z = -4.27) with blue-marked window opening (X: 0.98..1.78, Y: 0.96..2.02) */}
+        <mesh position={[1.38, 0.48, -4.27]} receiveShadow>
+          <boxGeometry args={[1.12, 0.96, wallThickness]} />
           <meshStandardMaterial map={textures.wallAlbedo} bumpMap={textures.wallBump} bumpScale={0.008} roughness={0.86} />
+        </mesh>
+        <mesh position={[1.38, 0.96, -4.25]} receiveShadow>
+          <boxGeometry args={[0.84, 0.03, 0.17]} />
+          <meshStandardMaterial map={textures.wallAlbedo} bumpMap={textures.wallBump} bumpScale={0.008} roughness={0.88} />
+        </mesh>
+        <mesh position={[1.38, 2.45, -4.27]} receiveShadow>
+          <boxGeometry args={[1.12, 0.86, wallThickness]} />
+          <meshStandardMaterial map={textures.wallAlbedo} bumpMap={textures.wallBump} bumpScale={0.008} roughness={0.86} />
+        </mesh>
+        <mesh position={[0.9, 1.49, -4.27]} receiveShadow>
+          <boxGeometry args={[0.16, 1.06, wallThickness]} />
+          <meshStandardMaterial map={textures.wallAlbedo} bumpMap={textures.wallBump} bumpScale={0.008} roughness={0.86} />
+        </mesh>
+        <mesh position={[1.86, 1.49, -4.27]} receiveShadow>
+          <boxGeometry args={[0.16, 1.06, wallThickness]} />
+          <meshStandardMaterial map={textures.wallAlbedo} bumpMap={textures.wallBump} bumpScale={0.008} roughness={0.86} />
+        </mesh>
+        <mesh position={[1.38, baseboardHeight / 2, -4.192]} receiveShadow>
+          <boxGeometry args={[0.84, baseboardHeight, 0.016]} />
+          <meshStandardMaterial color="#361c14" roughness={0.6} />
+        </mesh>
+        {/* Blue-marked sized balcony-style grill inside the far exterior window opening */}
+        <HallwayGrillPanel
+          position={[1.38, 1.49, -4.24]}
+          spanWidth={0.8}
+          height={1.06}
+          bays={4}
+          rungCount={5}
+        />
+        {/* Outside home twilight view visible through the hallway window grill */}
+        <mesh position={[1.38, 1.48, -5.35]}>
+          <planeGeometry args={[4.8, 3.2]} />
+          <meshBasicMaterial map={textures.outsideHomeView} />
         </mesh>
         <mesh position={[0.968, baseboardHeight / 2, -3.2]} receiveShadow>
           <boxGeometry args={[0.016, baseboardHeight, 2.0]} />
@@ -599,14 +625,6 @@ function MainHallwayWorld({
           <boxGeometry args={[0.016, baseboardHeight, 2.0]} />
           <meshStandardMaterial color="#361c14" roughness={0.6} />
         </mesh>
-        {/* Balcony-style half grill on NE opening left edge (Right blue rectangle) */}
-        <HallwayGrillPanel
-          position={[1.07, 1.05, -2.19]}
-          spanWidth={0.22}
-          height={2.08}
-          bays={2}
-          rungCount={8}
-        />
         {/* Interior door along East inner wall visible from front photo */}
         <PanelWoodDoor
           position={[1.79, 0, -3.22]}
@@ -904,25 +922,11 @@ function MainHallwayWorld({
           <cylinderGeometry args={[0.062, 0.05, 1.9, 12]} />
           <meshStandardMaterial map={textures.curtainFloral} roughness={0.85} />
         </mesh>
-        {/* Washbasin, Hanging Orange Towel, Switchboard & Pink Tub along continuous West Wall (Z = 2.38) */}
-        <group name="LeftBackWashCorner" position={[-2.22, 0, 2.38]}>
-          <mesh position={[0.02, 0.86, 0]} castShadow>
-            <cylinderGeometry args={[0.18, 0.13, 0.15, 16]} />
-            <meshStandardMaterial color="#f1f5f9" roughness={0.28} />
-          </mesh>
-          <mesh position={[-0.16, 1.18, -0.18]}>
-            <boxGeometry args={[0.02, 0.09, 0.14]} />
-            <meshStandardMaterial color="#e2e8f0" roughness={0.4} />
-          </mesh>
-          <mesh position={[-0.08, 0.72, 0.18]} castShadow>
-            <boxGeometry args={[0.035, 0.52, 0.16]} />
-            <meshStandardMaterial color="#d97706" roughness={0.9} />
-          </mesh>
-          <mesh position={[0.04, 0.13, 0]} castShadow receiveShadow>
-            <cylinderGeometry args={[0.21, 0.16, 0.22, 16]} />
-            <meshStandardMaterial color="#e7b8b8" roughness={0.75} />
-          </mesh>
-        </group>
+        {/* Wall Switchboard along continuous West Wall (washbasin & bucket removed) */}
+        <mesh position={[-halfW + 0.02, 1.18, 2.2]}>
+          <boxGeometry args={[0.02, 0.09, 0.14]} />
+          <meshStandardMaterial color="#e2e8f0" roughness={0.4} />
+        </mesh>
         {/* Recessed Narrow Tan Bathroom Door at Marked Red-Box Position (-X: -2.40 .. -2.82, Z: +2.82 .. +3.52) */}
         <group name="RedBoxRecessedBathroomDoor">
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-2.61, 0, 3.17]} receiveShadow>
