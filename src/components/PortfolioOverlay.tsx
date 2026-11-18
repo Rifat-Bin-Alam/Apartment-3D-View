@@ -3,7 +3,6 @@ import {
   ArrowDown,
   ChevronDown,
   ChevronUp,
-  Download,
   Eye,
   Fan,
   Lightbulb,
@@ -29,8 +28,6 @@ interface PortfolioOverlayProps {
   onToggleRoomLight: () => void;
   fanRunning: boolean;
   onToggleFan: () => void;
-  onExportGlb: () => void;
-  isExporting: boolean;
 }
 
 export function PortfolioOverlay({
@@ -46,8 +43,6 @@ export function PortfolioOverlay({
   onToggleRoomLight,
   fanRunning,
   onToggleFan,
-  onExportGlb,
-  isExporting,
 }: PortfolioOverlayProps) {
   const [dockCollapsed, setDockCollapsed] = useState(false);
 
@@ -246,17 +241,6 @@ export function PortfolioOverlay({
                     <span>Fan: {fanRunning ? 'ON' : 'OFF'}</span>
                   </button>
                 )}
-
-                <button
-                  type="button"
-                  onClick={onExportGlb}
-                  disabled={isExporting}
-                  title="Export 3D Scene as GLB"
-                  className="flex cursor-pointer items-center gap-1.5 rounded-md border border-white/15 px-2.5 py-1.5 text-xs font-medium text-zinc-200 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-50 whitespace-nowrap shrink-0"
-                >
-                  <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span>{isExporting ? 'Exporting...' : 'Export GLB'}</span>
-                </button>
 
                 <button
                   type="button"

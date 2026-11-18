@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { CameraPreset } from './scene/roomConstants';
 import { BalconyPresetId } from './scene/balconyConstants';
 import { HallwayPresetId } from './scene/hallwayConstants';
-import { exportRoomToGLB } from './scene/exportGlb';
 import { ActiveArea } from './components/BalconyNavigation';
 import { RoomTransition } from './components/RoomTransition';
 import { PortfolioOverlay, UnifiedPresetId } from './components/PortfolioOverlay';
@@ -43,7 +42,6 @@ export default function App() {
   const [presetTrigger, setPresetTrigger] = useState(0);
   const [roomLightOn, setRoomLightOn] = useState(true);
   const [fanRunning, setFanRunning] = useState(true);
-  const [isExporting, setIsExporting] = useState(false);
   const [transitionState, setTransitionState] = useState<{
     visible: boolean;
     label?: string;
@@ -148,24 +146,6 @@ export default function App() {
     [activeArea, clearTransitionTimers, preloadArea, switchArea, transitionState.visible],
   );
 
-  const handleExportGlb = useCallback(async () => {
-    if (!sceneGroupRef.current || isExporting) return;
-    setIsExporting(true);
-    try {
-      const filename =
-        activeArea === 'balcony'
-          ? 'balcony-3d.glb'
-          : activeArea === 'hallway'
-            ? 'main-hallway-3d.glb'
-            : 'my-room-3d.glb';
-      await exportRoomToGLB(sceneGroupRef.current, filename);
-    } catch (err) {
-      console.error('GLB export failed:', err);
-    } finally {
-      setIsExporting(false);
-    }
-  }, [activeArea, isExporting]);
-
   const roomPreset: CameraPreset['id'] =
     activePreset === 'desk' ||
     activePreset === 'overview' ||
@@ -259,8 +239,6 @@ export default function App() {
           onToggleRoomLight={() => setRoomLightOn((v) => !v)}
           fanRunning={fanRunning}
           onToggleFan={() => setFanRunning((v) => !v)}
-          onExportGlb={handleExportGlb}
-          isExporting={isExporting}
         />
       </main>
 
